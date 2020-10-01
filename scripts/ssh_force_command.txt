@@ -1,0 +1,3 @@
+
+Match User root
+    ForceCommand /usr/local/bin/openvpn_autostart

@@ -1,0 +1,58 @@
+#!/bin/sh
+
+if [ ! -z "$DEBUG" && "$DEBUG" = "true" ];
+then
+	set -x 
+fi
+set -e 
+set -o pipefail
+
+_tmpfile=$(mktemp)
+
+check_vpn() {
+    echo "state" | /usr/bin/nc local:/var/run/openvpn_management | sed -n 2p|grep -q 'CONNECTED,SUCCESS'
+    return $?
+}
+
+if [ -f /var/run/openvpn.pid ]; then
+    if ( kill -0 `cat /var/run/openvpn.pid` > /dev/null 2>&1 && check_vpn ); then
+        if [[ -n "$SSH_ORIGINAL_COMMAND" ]]
+        then
+            exec /bin/sh -c "$SSH_ORIGINAL_COMMAND"
+        else
+            exec /bin/sh -il
+        fi
+    fi
+fi
+read -p 'OpenVPN username: ' _username
+read -sp 'OpenVPN password: ' _password
+echo -e ""
+read -p "OpenVPN OTP Code: " _otp
+
+echo -e "$_username\n$_password$_otp" > "$_tmpfile"
+
+openvpn --daemon \
+        --log-append /proc/1/fd/1 \
+        --writepid /var/run/openvpn.pid \
+        --verb 1 \
+        --route-nopull \
+        --redirect-gateway def1 \
+        --single-session \
+        --management /var/run/openvpn_management unix \
+        --config /run/secrets/openvpn_profile \
+        --auth-user-pass "$_tmpfile"
+
+rm -f "$_tmpfile"
+
+until check_vpn &> /dev/null
+do
+    echo "VPN not connected yet, waiting 1sec..."
+    sleep 1
+done
+
+if [[ -n "$SSH_ORIGINAL_COMMAND" ]]
+then
+    exec /bin/sh -c "$SSH_ORIGINAL_COMMAND"
+else
+    exec /bin/sh -il
+fi
