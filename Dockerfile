@@ -1,5 +1,5 @@
 FROM alpine:3.12.0
-RUN apk add --no-cache openssh-server openssh-client openvpn
+RUN apk add --no-cache openssh-server openssh-client openvpn oath-toolkit-oathtool
 COPY scripts/docker-entrypoint.sh /usr/local/bin
 COPY scripts/openvpn_autostart /usr/local/bin/
 COPY scripts/ssh_force_command.txt /tmp/
