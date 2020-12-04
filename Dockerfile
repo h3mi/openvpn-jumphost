@@ -1,5 +1,7 @@
+# sudo sh -c "xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f /tmp/.docker.xauth nmerge -"
+
 FROM alpine:3.12.0
-RUN apk add --no-cache openssh-server openssh-client openvpn oath-toolkit-oathtool
+RUN apk add --no-cache openssh-server openssh-client openvpn oath-toolkit-oathtool zenity libcanberra-gtk3 ca-certificates alsa-lib hicolor-icon-theme mesa-dri-intel mesa-gl
 COPY scripts/docker-entrypoint.sh /usr/local/bin
 COPY scripts/openvpn_autostart /usr/local/bin/
 COPY scripts/ssh_force_command.txt /tmp/

@@ -8,9 +8,19 @@ services:
     cap_add: 
       - NET_ADMIN
     restart: on-failure
+    devices:
+      - /dev/dri
+      - /dev/snd
     environment: 
+      DISPLAY: ":0"
+      NO_AT_BRIDGE: "1"
+      XAUTHORITY: "/tmp/.docker.xauth"
       SSH_PUBLIC_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAAD.........................................AA mail@example.com"
       DEBUG: "true"
+    volumes:
+      - /dev/shm:/dev/shm
+      - /tmp:/tmp
+      - /usr/share/fonts:/usr/share/fonts
     secrets:
       - openvpn_profile
 

@@ -24,17 +24,20 @@ if [ -f /var/run/openvpn.pid ]; then
         fi
     fi
 fi
-read -p 'OpenVPN username: ' _username
-read -sp 'OpenVPN password: ' _password
-echo -e ""
-read -p "OpenVPN OTP Code: " _otp
+# read -p 'OpenVPN username: ' _username
+# read -sp 'OpenVPN password: ' _password
+# echo -e ""
+# read -p "OpenVPN OTP Code: " _otp
+read _username _password _otp <<EOF
+$(zenity --forms --add-entry="Username" --add-password="Password" --add-entry="OTP" --text="Provide credentials for VPN" --show-header)
+EOF
 
 echo -e "$_username\n$_password$_otp" > "$_tmpfile"
 
 openvpn --daemon \
         --log-append /proc/1/fd/1 \
         --writepid /var/run/openvpn.pid \
-        --verb 1 \
+        --verb 3 \
         --route-nopull \
         --redirect-gateway def1 \
         --single-session \
