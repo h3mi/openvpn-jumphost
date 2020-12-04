@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -z "$DEBUG" && "$DEBUG" = "true" ];
+if [ "${DEBUG:-false}" = "true" ];
 then
 	set -x 
 fi
