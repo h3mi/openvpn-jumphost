@@ -17,5 +17,5 @@ RUN chmod +x /usr/local/bin/openvpn_autostart \
 
 EXPOSE 22
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["/usr/sbin/sshd","-D"]
+CMD ["/usr/local/bin/openvpn_autostart"]
 
