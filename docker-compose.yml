@@ -1,3 +1,4 @@
+version: "3.2"
 services:
   openvpn-jumphost:
     image: h3mi/openvpn-jumphost:latest
