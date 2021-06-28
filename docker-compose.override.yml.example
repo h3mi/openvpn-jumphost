@@ -1,0 +1,8 @@
+services:
+  openvpn-jumphost:
+    environment: 
+      DEBUG: "true"
+
+secrets:
+  openvpn_profile:
+    file: ~/.vpn/client.ovpn

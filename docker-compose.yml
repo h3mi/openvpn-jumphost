@@ -1,0 +1,20 @@
+services:
+  openvpn-jumphost:
+    image: h3mi/openvpn-jumphost:latest
+    build: .
+    container_name: gw
+    command: "/bin/sh -c 'while true; do date; sleep 5; done'"
+    init: true
+    cap_add: 
+      - NET_ADMIN
+    restart: on-failure
+    environment: 
+      DEBUG: "true"
+#      SSH_AGENT_PID: "${SSH_AGENT_PID}"
+      SSH_AUTH_SOCK: "/run/ssh"
+    volumes:
+      - /dev/shm:/dev/shm
+      - ${SSH_AUTH_SOCK}:/run/ssh
+    secrets:
+      - openvpn_profile
+
